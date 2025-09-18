@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriBots - Planting Recommendations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .logo p {
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        
+        .back-btn {
+            color: #ddd;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            color: #4CAF50;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title h2 {
+            font-size: 2.2rem;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .page-title p {
+            font-size: 1.1rem;
+            color: #ddd;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .user-data-summary {
+            background: rgba(76, 175, 80, 0.15);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-data-icon {
+            color: #4CAF50;
+            font-size: 1.2rem;
+        }
+        
+        .user-data-text {
+            font-size: 0.9rem;
+        }
+        
+        .crop-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .crop-tab {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid transparent;
+        }
+        
+        .crop-tab:hover {
+            background: rgba(76, 175, 80, 0.2);
+        }
+        
+        .crop-tab.active {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .summary-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .summary-item .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        
+        .summary-item .label {
+            font-size: 1rem;
+            color: #ddd;
+        }
+        
+        .crop-content {
+            display: none;
+        }
+        
+        .crop-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .crop-suggestion {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .crop-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .crop-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #4CAF50;
+        }
+        
+        .crop-title {
+            font-size: 1.8rem;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .crop-description {
+            color: #ddd;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 25px 0;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .progress-item {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .progress-circle {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+        
+        .progress-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .progress-circle circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transform-origin: center;
+        }
+        
+        .progress-circle .bg {
+            stroke: rgba(255, 255, 255, 0.1);
+        }
+        
+        .progress-circle .progress {
+            stroke: #4CAF50;
+            stroke-dasharray: 251.2;
+            transition: stroke-dashoffset 1s ease;
+        }
+        
+        .progress-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+        
+        .progress-label {
+            font-size: 1rem;
+            color: #ddd;
+        }
+        
+        .recommendations {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .recommendation-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            color: #4CAF50;
+            margin-right: 15px;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: #4CAF50;
+            font-weight: 600;
+        }
+        
+        .recommendation-list {
+            list-style-type: none;
+        }
+        
+        .recommendation-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .recommendation-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .list-icon {
+            color: #4CAF50;
+            margin-right: 10px;
+            font-size: 1.2rem;
+            margin-top: 3px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 30px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn:hover {
+            background: #388E3C;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn i {
+            margin-left: 8px;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .btn-sensor {
+            background: #FF9800;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+        
+        .btn-sensor:hover {
+            background: #F57C00;
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+        
+        @media (max-width: 900px) {
+            .recommendations {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .progress-item {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .crop-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>AgriBots</h1>
+                <p>Personalized Crop Recommendations</p>
+            </div>
+            <a href="planting.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Planting
+            </a>
+        </header>
+        
+        <div class="page-title">
+            <h2>Optimal Crop Recommendations</h2>
+            <p>Based on your soil type, climate conditions, and crop selection, we've identified these personalized recommendations for your farm.</p>
+        </div>
+        
+        <div id="userDataSummary" class="user-data-summary">
+            <!-- User data will be populated by JavaScript -->
+        </div>
+        
+        <div class="crop-tabs">
+            <div class="crop-tab active" data-crop="primary">Primary Crop</div>
+            <div class="crop-tab" data-crop="alternative">Alternative Crops</div>
+            <div class="crop-tab" data-crop="comparison">Compare Options</div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-item">
+                <div class="value" id="soilTypeValue">Loading...</div>
+                <div class="label">Soil Type</div>
+            </div>
+            <div class="summary-item">
+                <div class="value" id="climateValue">Loading...</div>
+                <div class="label">Climate</div>
+            </div>
+            <div class="summary-item">
+                <div class="value" id="areaSizeValue">Loading...</div>
+                <div class="label">Field Area</div>
+            </div>
+            <div class="summary-item">
+                <div class="value" id="irrigationValue">Loading...</div>
+                <div class="label">Irrigation</div>
+            </div>
+        </div>
+        
+        <!-- Primary Crop Content -->
+        <div class="crop-content active" id="primary-content">
+            <div class="crop-suggestion">
+                <div class="crop-header">
+                    <img id="primaryCropImage" src="" alt="Primary crop" class="crop-image">
+                    <div>
+                        <h3 class="crop-title" id="primaryCropTitle">Your Selected Crop</h3>
+                        <p class="crop-description" id="primaryCropDescription">We're analyzing the best approach for your selected crop based on your farm conditions.</p>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-item">
+                        <div class="progress-circle">
+                            <svg>
+                                <circle class="bg" cx="50" cy="50" r="40"></circle>
+                                <circle class="progress" cx="50" cy="50" r="40" stroke-dashoffset="175.84"></circle>
+                            </svg>
+                            <div class="progress-value" id="yieldValue">0%</div>
+                        </div>
+                        <div class="progress-label">Yield Potential</div>
+                    </div>
+                    
+                    <div class="progress-item">
+                        <div class="progress-circle">
+                            <svg>
+                                <circle class="bg" cx="50" cy="50" r="40"></circle>
+                                <circle class="progress" cx="50" cy="50" r="40" stroke-dashoffset="175.84"></circle>
+                            </svg>
+                            <div class="progress-value" id="diseaseValue">0%</div>
+                        </div>
+                        <div class="progress-label">Disease Resistance</div>
+                    </div>
+                    
+                    <div class="progress-item">
+                        <div class="progress-circle">
+                            <svg>
+                                <circle class="bg" cx="50" cy="50" r="40"></circle>
+                                <circle class="progress" cx="50" cy="50" r="40" stroke-dashoffset="251.2"></circle>
+                            </svg>
+                            <div class="progress-value" id="marketValue">0%</div>
+                        </div>
+                        <div class="progress-label">Market Demand</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recommendations">
+                <div class="recommendation-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3 class="card-title">Planting Guide</h3>
+                    </div>
+                    <ul class="recommendation-list" id="plantingGuide">
+                        <li>
+                            <i class="fas fa-spinner fa-spin list-icon"></i>
+                            <div>Loading recommendations for your crop...</div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="recommendation-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <h3 class="card-title">Watering Schedule</h3>
+                    </div>
+                    <ul class="recommendation-list" id="wateringGuide">
+                        <li>
+                            <i class="fas fa-spinner fa-spin list-icon"></i>
+                            <div>Loading recommendations for your crop...</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="#" class="btn" id="downloadGuideBtn">
+                    <i class="fas fa-download"></i> Download Growing Guide
+                </a>
+                <a href="#" class="btn btn-outline">
+                    <i class="fas fa-shopping-cart"></i> Buy Supplies
+                </a>
+                <a href="sensor.html" class="btn btn-sensor">
+                    <i class="fas fa-microchip"></i> Setup Monitoring Sensors
+                </a>
+            </div>
+        </div>
+        
+        <!-- Alternative Crops Content -->
+        <div class="crop-content" id="alternative-content">
+            <div class="crop-suggestion">
+                <h3 class="crop-title">Alternative Crop Suggestions</h3>
+                <p class="crop-description">Based on your farm conditions, these alternative crops might also be suitable for your land and could provide additional income opportunities.</p>
+                
+                <div class="recommendations">
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <h3 class="card-title">Best Alternatives</h3>
+                        </div>
+                        <ul class="recommendation-list" id="alternativeCropsList">
+                            <li>
+                                <i class="fas fa-spinner fa-spin list-icon"></i>
+                                <div>Loading alternative crop suggestions...</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-hand-holding-usd"></i>
+                            </div>
+                            <h3 class="card-title">Economic Benefits</h3>
+                        </div>
+                        <ul class="recommendation-list">
+                            <li>
+                                <i class="fas fa-check-circle list-icon"></i>
+                                <div>Intercropping can increase total yield by 15-25%</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle list-icon"></i>
+                                <div>Diversification reduces market risk</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle list-icon"></i>
+                                <div>Some crops improve soil health for your main crop</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="#" class="btn">
+                    <i class="fas fa-download"></i> Download Alternatives Report
+                </a>
+                <a href="planting.html" class="btn btn-outline">
+                    <i class="fas fa-edit"></i> Modify Crop Selection
+                </a>
+            </div>
+        </div>
+        
+        <!-- Comparison Table -->
+        <div class="crop-content" id="comparison-content">
+            <div class="crop-suggestion">
+                <h3 class="crop-title">Crop Comparison</h3>
+                <p class="crop-description">Compare your selected crop with alternative options based on yield potential, maintenance requirements, and market value.</p>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th id="comparisonPrimary">Your Crop</th>
+                            <th>Alternative 1</th>
+                            <th>Alternative 2</th>
+                            <th>Alternative 3</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparisonTableBody">
+                        <tr>
+                            <td>Yield Potential</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td>Water Needs</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td>Time to Harvest</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td>Disease Resistance</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                        </tr>
+                        <tr>
+                            <td>Market Value</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                            <td>Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="#" class="btn">
+                    <i class="fas fa-download"></i> Download Full Comparison
+                </a>
+                <a href="#" class="btn btn-outline">
+                    <i class="fas fa-seedling"></i> Plan Mixed Cropping
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load data from planting form
+            const plantingData = JSON.parse(localStorage.getItem('plantingFormData'));
+            
+            if (!plantingData) {
+                // Redirect to planting page if no data exists
+                alert('No planting data found. Please complete the planting form first.');
+                window.location.href = 'planting.html';
+                return;
+            }
+            
+            // Get the selected crop from the form data
+            const selectedCrop = plantingData.cropType;
+            
+            // Display user data summary
+            const userDataSummary = document.getElementById('userDataSummary');
+            userDataSummary.innerHTML = `
+                <div class="user-data-item">
+                    <i class="fas fa-tag user-data-icon"></i>
+                    <span class="user-data-text">Crop: ${formatCropName(selectedCrop)}</span>
+                </div>
+                <div class="user-data-item">
+                    <i class="fas fa-map user-data-icon"></i>
+                    <span class="user-data-text">Area: ${plantingData.areaSize} acres</span>
+                </div>
+                <div class="user-data-item">
+                    <i class="fas fa-calendar user-data-icon"></i>
+                    <span class="user-data-text">Planting: ${new Date(plantingData.plantingDate).toLocaleDateString()}</span>
+                </div>
+                <div class="user-data-item">
+                    <i class="fas fa-tint user-data-icon"></i>
+                    <span class="user-data-text">Irrigation: ${formatIrrigation(plantingData.irrigation)}</span>
+                </div>
+            `;
+            
+            // Update summary card with user data
+            document.getElementById('soilTypeValue').textContent = formatSoilType(plantingData.soilType);
+            document.getElementById('climateValue').textContent = formatClimate(plantingData.climate);
+            document.getElementById('areaSizeValue').textContent = `${plantingData.areaSize} acres`;
+            document.getElementById('irrigationValue').textContent = formatIrrigation(plantingData.irrigation);
+            
+            // Generate personalized recommendations based on the selected crop
+            generateCropRecommendations(selectedCrop, plantingData);
+            
+            // Tab functionality
+            const tabs = document.querySelectorAll('.crop-tab');
+            const contents = document.querySelectorAll('.crop-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const crop = tab.getAttribute('data-crop');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    contents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${crop}-content`).classList.add('active');
+                });
+            });
+            
+            // Formatting functions
+            function formatCropName(crop) {
+                const names = {
+                    'wheat': 'Wheat',
+                    'rice': 'Rice',
+                    'corn': 'Corn',
+                    'soybean': 'Soybean',
+                    'vegetables': 'Vegetables',
+                    'fruits': 'Fruits',
+                    'other': 'Other Crops'
+                };
+                return names[crop] || crop;
+            }
+            
+            function formatSoilType(soil) {
+                const types = {
+                    'sandy': 'Sandy',
+                    'loamy': 'Loamy',
+                    'clay': 'Clay',
+                    'silty': 'Silty',
+                    'peat': 'Peaty',
+                    'chalky': 'Chalky',
+                    'unknown': 'Unknown'
+                };
+                return types[soil] || soil;
+            }
+            
+            function formatClimate(climate) {
+                const types = {
+                    'tropical': 'Tropical',
+                    'dry': 'Dry',
+                    'temperate': 'Temperate',
+                    'continental': 'Continental',
+                    'polar': 'Polar'
+                };
+                return types[climate] || climate;
+            }
+            
+            function formatIrrigation(irrigation) {
+                const types = {
+                    'yes': 'Good',
+                    'no': 'Limited',
+                    'limited': 'Moderate'
+                };
+                return types[irrigation] || irrigation;
+            }
+            
+            // Generate personalized recommendations based on crop selection
+            function generateCropRecommendations(crop, data) {
+                // Set primary crop information
+                document.getElementById('primaryCropTitle').textContent = formatCropName(crop);
+                document.getElementById('primaryCropImage').src = getCropImage(crop);
+                
+                // Set crop-specific description
+                document.getElementById('primaryCropDescription').textContent = getCropDescription(crop, data);
+                
+                // Calculate scores based on conditions
+                const yieldScore = calculateYieldScore(crop, data);
+                const diseaseScore = calculateDiseaseScore(crop, data);
+                const marketScore = calculateMarketScore(crop);
+                
+                // Update progress circles
+                document.getElementById('yieldValue').textContent = `${yieldScore}%`;
+                document.getElementById('diseaseValue').textContent = `${diseaseScore}%`;
+                document.getElementById('marketValue').textContent = `${marketScore}%`;
+                
+                // Animate progress circles
+                animateProgressCircles();
+                
+                // Generate planting guide
+                document.getElementById('plantingGuide').innerHTML = generatePlantingGuide(crop, data);
+                
+                // Generate watering guide
+                document.getElementById('wateringGuide').innerHTML = generateWateringGuide(crop, data);
+                
+                // Generate alternative crops
+                document.getElementById('alternativeCropsList').innerHTML = generateAlternativeCrops(crop, data);
+                
+                // Update comparison table
+                updateComparisonTable(crop, data);
+                
+                // Update download button
+                document.getElementById('downloadGuideBtn').href = `#download-${crop}`;
+                document.getElementById('downloadGuideBtn').innerHTML = `<i class="fas fa-download"></i> Download ${formatCropName(crop)} Guide`;
+            }
+            
+            function getCropImage(crop) {
+                const images = {
+                    'wheat': 'https://images.unsplash.com/photo-1550147760-44c9966d6bc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                    'rice': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                    'corn': 'https://images.unsplash.com/photo-1503925802535-c9466c5d5c2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                    'soybean': 'https://images.unsplash.com/photo-1590172205845-df4c8a133c84?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                    'vegetables': 'https://images.unsplash.com/photo-1561136594-7f68413baa99?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                    'fruits': 'https://images.unsplash.com/photo-1598171707940-dffa0c1a0c9a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+                };
+                return images[crop] || 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+            }
+            
+            function getCropDescription(crop, data) {
+                const descriptions = {
+                    'wheat': `Wheat is well-suited for your ${formatSoilType(data.soilType)} soil and ${formatClimate(data.climate)} climate. With proper ${formatIrrigation(data.irrigation)} irrigation, you can expect a good yield.`,
+                    'rice': `Rice cultivation requires adequate water availability. Your ${formatIrrigation(data.irrigation)} irrigation system and ${formatClimate(data.climate)} climate are ${data.irrigation === 'yes' ? 'well-suited' : 'moderately suited'} for rice production.`,
+                    'corn': `Corn thrives in your ${formatSoilType(data.soilType)} soil conditions. The ${formatClimate(data.climate)} climate and ${formatIrrigation(data.irrigation)} irrigation provide a favorable environment for corn cultivation.`,
+                    'soybean': `Soybeans are a good choice for your ${formatSoilType(data.soilType)} soil. With your ${formatClimate(data.climate)} climate and ${formatIrrigation(data.irrigation)} irrigation, soybean cultivation has strong potential.`,
+                    'vegetables': `Vegetable cultivation is versatile and can adapt to your ${formatSoilType(data.soilType)} soil. Your ${formatClimate(data.climate)} climate and ${formatIrrigation(data.irrigation)} irrigation support a wide variety of vegetables.`,
+                    'fruits': `Fruit cultivation requires specific conditions. Your ${formatSoilType(data.soilType)} soil and ${formatClimate(data.climate)} climate are ${data.climate === 'tropical' || data.climate === 'temperate' ? 'well-suited' : 'moderately suited'} for various fruits.`
+                };
+                return descriptions[crop] || `Your selected crop can be grown in your ${formatSoilType(data.soilType)} soil with ${formatClimate(data.climate)} climate conditions. With ${formatIrrigation(data.irrigation)} irrigation, you have a good foundation for successful cultivation.`;
+            }
+            
+            function calculateYieldScore(crop, data) {
+                // Simple algorithm to calculate yield potential based on conditions
+                let score = 70; // Base score
+                
+                // Adjust based on soil type
+                if (crop === 'wheat' && data.soilType === 'loamy') score += 15;
+                if (crop === 'rice' && data.soilType === 'clay') score += 10;
+                if (crop === 'corn' && data.soilType === 'silty') score += 12;
+                
+                // Adjust based on climate
+                if (crop === 'wheat' && data.climate === 'temperate') score += 10;
+                if (crop === 'rice' && data.climate === 'tropical') score += 15;
+                if (crop === 'fruits' && data.climate === 'tropical') score += 12;
+                
+                // Adjust based on irrigation
+                if (data.irrigation === 'yes') score += 10;
+                if (data.irrigation === 'limited') score += 5;
+                
+                return Math.min(score, 95); // Cap at 95%
+            }
+            
+            function calculateDiseaseScore(crop, data) {
+                // Simple algorithm to calculate disease resistance based on conditions
+                let score = 75; // Base score
+                
+                // Some crops are more susceptible in certain conditions
+                if (crop === 'vegetables' && data.climate === 'tropical') score -= 10;
+                if (crop === 'fruits' && data.irrigation === 'limited') score -= 5;
+                
+                return Math.max(score, 50); // Minimum 50%
+            }
+            
+            function calculateMarketScore(crop) {
+                // Market demand scores
+                const scores = {
+                    'wheat': 80,
+                    'rice': 85,
+                    'corn': 75,
+                    'soybean': 70,
+                    'vegetables': 90,
+                    'fruits': 85
+                };
+                return scores[crop] || 75;
+            }
+            
+            function generatePlantingGuide(crop, data) {
+                const guides = {
+                    'wheat': `
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Optimal planting time: ${new Date(data.plantingDate).toLocaleDateString()}</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Row spacing: 15-18 cm between rows</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Planting depth: 2-5 cm</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Seed rate: 100-125 kg/ha</div></li>
+                    `,
+                    'rice': `
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Transplant seedlings 20-30 days after sowing</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Spacing: 20×20 cm or 25×25 cm</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Plant 2-3 seedlings per hill</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Maintain 2-5 cm water depth in the field</div></li>
+                    `,
+                    'corn': `
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Plant when soil temperature reaches 15°C</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Row spacing: 75-90 cm</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Plant spacing: 20-25 cm within rows</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Planting depth: 3-5 cm</div></li>
+                    `,
+                    'default': `
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Prepare soil with proper tillage</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Test soil pH and nutrients before planting</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Follow recommended spacing for your crop variety</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Plant at the recommended depth for optimal germination</div></li>
+                    `
+                };
+                
+                return guides[crop] || guides.default;
+            }
+            
+            function generateWateringGuide(crop, data) {
+                const guides = {
+                    'wheat': `
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Critical stages: Crown root initiation, Tillering, Flowering</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Water requirement: 450-650 mm per crop cycle</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Irrigation interval: 10-15 days in winter, 7-10 days in summer</div></li>
+                    `,
+                    'rice': `
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Maintain 2-5 cm standing water during vegetative stage</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Drain field 10-15 days before harvest</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Total water requirement: 900-2500 mm depending on season</div></li>
+                    `,
+                    'corn': `
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Critical stages: Knee-high, Tasseling, Silking, Grain filling</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Water requirement: 500-800 mm per crop cycle</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Irrigation interval: 10-12 days</div></li>
+                    `,
+                    'default': `
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Water deeply but infrequently to encourage deep root growth</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Morning irrigation reduces disease incidence</div></li>
+                        <li><i class="fas fa-check-circle list-icon"></i><div>Adjust irrigation based on rainfall and soil moisture</div></li>
+                    `
+                };
+                
+                return guides[crop] || guides.default;
+            }
+            
+            function generateAlternativeCrops(crop, data) {
+                // Suggest alternative crops based on the primary crop and conditions
+                let alternatives = [];
+                
+                if (crop === 'wheat') {
+                    alternatives = ['Barley', 'Oats', 'Mustard', 'Chickpea'];
+                } else if (crop === 'rice') {
+                    alternatives = ['Fish farming', 'Prawn culture', 'Water chestnut', 'Lotus'];
+                } else if (crop === 'corn') {
+                    alternatives = ['Soybean', 'Cowpea', 'Pumpkin', 'Sunflower'];
+                } else if (crop === 'soybean') {
+                    alternatives = ['Corn', 'Wheat', 'Millet', 'Peanut'];
+                } else if (crop === 'vegetables') {
+                    alternatives = ['Legumes', 'Herbs', 'Root vegetables', 'Leafy greens'];
+                } else if (crop === 'fruits') {
+                    alternatives = ['Berries', 'Nuts', 'Medicinal plants', 'Flowers'];
+                } else {
+                    alternatives = ['Legumes', 'Cereals', 'Oilseeds', 'Vegetables'];
+                }
+                
+                return alternatives.map(alt => `
+                    <li>
+                        <i class="fas fa-seedling list-icon"></i>
+                        <div>${alt} - Compatible with ${formatCropName(crop)} and suitable for your conditions</div>
+                    </li>
+                `).join('');
+            }
+            
+            function updateComparisonTable(crop, data) {
+                document.getElementById('comparisonPrimary').textContent = formatCropName(crop);
+                
+                // Generate comparison data based on the selected crop
+                const comparisons = {
+                    'wheat': [
+                        ['Yield Potential', 'High (80%)', 'Medium (70%)', 'High (75%)', 'Medium (65%)'],
+                        ['Water Needs', 'Medium', 'Low', 'Medium', 'Low'],
+                        ['Time to Harvest', '110-130 days', '90-110 days', '100-120 days', '85-100 days'],
+                        ['Disease Resistance', 'High (85%)', 'Medium (75%)', 'High (80%)', 'Medium (70%)'],
+                        ['Market Value', 'Stable (80%)', 'Moderate (70%)', 'Good (75%)', 'Moderate (65%)']
+                    ],
+                    'rice': [
+                        ['Yield Potential', 'High (85%)', 'Medium (60%)', 'High (70%)', 'Low (50%)'],
+                        ['Water Needs', 'High', 'Medium', 'High', 'Medium'],
+                        ['Time to Harvest', '90-120 days', '75-100 days', '85-110 days', '70-90 days'],
+                        ['Disease Resistance', 'Medium (75%)', 'High (80%)', 'Medium (70%)', 'High (85%)'],
+                        ['Market Value', 'Stable (85%)', 'Good (75%)', 'Stable (80%)', 'Good (70%)']
+                    ],
+                    'default': [
+                        ['Yield Potential', 'High (80%)', 'Medium (70%)', 'High (75%)', 'Medium (65%)'],
+                        ['Water Needs', 'Medium', 'Low', 'Medium', 'Low'],
+                        ['Time to Harvest', '90-120 days', '75-100 days', '85-110 days', '70-90 days'],
+                        ['Disease Resistance', 'High (85%)', 'Medium (75%)', 'High (80%)', 'Medium (70%)'],
+                        ['Market Value', 'Stable (80%)', 'Moderate (70%)', 'Good (75%)', 'Moderate (65%)']
+                    ]
+                };
+                
+                const tableData = comparisons[crop] || comparisons.default;
+                const tableBody = document.getElementById('comparisonTableBody');
+                
+                tableBody.innerHTML = tableData.map(row => `
+                    <tr>
+                        <td>${row[0]}</td>
+                        <td>${row[1]}</td>
+                        <td>${row[2]}</td>
+                        <td>${row[3]}</td>
+                        <td>${row[4]}</td>
+                    </tr>
+                `).join('');
+            }
+            
+            function animateProgressCircles() {
+                const circles = document.querySelectorAll('.progress');
+                circles.forEach(circle => {
+                    const value = circle.parentElement.querySelector('.progress-value').textContent;
+                    const percentage = parseInt(value) / 100;
+                    const circumference = 2 * Math.PI * 40;
+                    const offset = circumference - (percentage * circumference);
+                    circle.style.strokeDasharray = circumference;
+                    circle.style.strokeDashoffset = offset;
+                });
+            }
+            
+            // Track selected crop for sensor setup
+            document.querySelectorAll('.btn-sensor').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Store selected crop for sensor page
+                    localStorage.setItem('selectedCrop', selectedCrop);
+                    
+                    // Add a slight delay for visual feedback
+                    e.preventDefault();
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecting...';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        window.location.href = 'sensor.html';
+                    }, 1000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

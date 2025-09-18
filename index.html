@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriBots - Smart Farming Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 2.8rem;
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .logo p {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ddd;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: none;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #4CAF50;
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 40px;
+            color: #4CAF50;
+            font-size: 18px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #ddd;
+            font-size: 0.9rem;
+        }
+        
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Error message styling */
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* Terms and Conditions */
+        .terms-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .terms-text {
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #ddd;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-group input {
+            margin-top: 3px;
+        }
+        
+        .checkbox-group label {
+            font-size: 0.9rem;
+            color: #ddd;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .logo h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo p {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chatbot-header {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chatbot-messages {
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .bot-message {
+            background: #f1f1f1;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .user-message {
+            background: #4CAF50;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .chatbot-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+        
+        .chatbot-input button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            width: auto;
+        }
+        
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>AgriBots</h1>
+            <p>Smart Farming Assistant</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            
+            <button type="submit">Login <i class="fas fa-sign-in-alt"></i></button>
+        </form>
+        
+        <div class="footer">
+            <p>Don't have an account? <a href="#" id="signupLink">Sign up here</a></p>
+            <p><a href="#" id="termsLink">Terms & Conditions</a></p>
+        </div>
+    </div>
+
+    <!-- Chatbot Toggle Button -->
+    <div class="chatbot-toggle">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Chatbot Container -->
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <h3>AgriBot Assistant</h3>
+            <i class="fas fa-times" id="closeChatbot"></i>
+        </div>
+        <div class="chatbot-messages">
+            <div class="message bot-message">Hello! I'm AgriBot, your farming assistant. How can I help you today?</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" placeholder="Type your message here...">
+            <button><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // Page Management
+        const pages = {
+            login: document.getElementById('loginForm').parentElement,
+            signup: null,
+            terms: null
+        };
+
+        // Create Signup Page
+        function createSignupPage() {
+            const signupHTML = `
+                <div class="logo">
+                    <h1>AgriBots</h1>
+                    <p>Create Your Account</p>
+                </div>
+                
+                <form id="signupForm">
+                    <div class="input-group">
+                        <label for="fullName">Full Name</label>
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="fullName" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="signupEmail">Email Address</label>
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="signupPassword">Password</label>
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signupPassword" placeholder="Create a password" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                    </div>
+                    
+                    <div class="terms-container">
+                        <div class="terms-text">
+                            <h4>Terms and Conditions</h4>
+                            <p>By creating an account, you agree to our Terms of Service and Privacy Policy. You consent to receive agricultural updates and notifications related to your farming activities.</p>
+                            <p>Our service provides AI-powered farming recommendations, but we are not liable for crop failures or losses based on our suggestions. Always consult with agricultural experts for critical decisions.</p>
+                            <p>You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <label for="agreeTerms">I have read and agree to the Terms and Conditions</label>
+                    </div>
+                    
+                    <button type="submit">Create Account <i class="fas fa-user-plus"></i></button>
+                </form>
+                
+                <div class="footer">
+                    <p>Already have an account? <a href="#" id="loginLink">Log in here</a></p>
+                </div>
+            `;
+            
+            const container = document.querySelector('.container');
+            container.innerHTML = signupHTML;
+            
+            // Add form submission handler
+            document.getElementById('signupForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const agreeTerms = document.getElementById('agreeTerms').checked;
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match. Please try again.');
+                    return;
+                }
+                
+                if (!agreeTerms) {
+                    alert('You must agree to the Terms and Conditions to create an account.');
+                    return;
+                }
+                
+                // Save user data (in a real app, this would go to a server)
+                const userData = {
+                    name: document.getElementById('fullName').value,
+                    email: document.getElementById('signupEmail').value,
+                    password: password
+                };
+                
+                localStorage.setItem('agribotsUser', JSON.stringify(userData));
+                
+                alert('Account created successfully! Please log in.');
+                createLoginPage();
+            });
+            
+            // Add login link handler
+            document.getElementById('loginLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                createLoginPage();
+            });
+        }
+
+        // Create Login Page
+        function createLoginPage() {
+            const loginHTML = `
+                <div class="logo">
+                    <h1>AgriBots</h1>
+                    <p>Smart Farming Assistant</p>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="email">Email Address</label>
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <button type="submit">Login <i class="fas fa-sign-in-alt"></i></button>
+                </form>
+                
+                <div class="footer">
+                    <p>Don't have an account? <a href="#" id="signupLink">Sign up here</a></p>
+                    <p><a href="#" id="termsLink">Terms & Conditions</a></p>
+                </div>
+            `;
+            
+            const container = document.querySelector('.container');
+            container.innerHTML = loginHTML;
+            
+            // Add form submission handler
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // In a real app, this would verify with a server
+                const savedUser = localStorage.getItem('agribotsUser');
+                
+                if (savedUser) {
+                    const userData = JSON.parse(savedUser);
+                    
+                    if (userData.email === email && userData.password === password) {
+                        alert('Login successful! Redirecting to dashboard...');
+                        window.location.href = 'option.html';
+                    } else {
+                        alert('Invalid email or password. Please try again.');
+                    }
+                } else {
+                    alert('No user found. Please sign up first.');
+                }
+            });
+            
+            // Add signup link handler
+            document.getElementById('signupLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                createSignupPage();
+            });
+            
+            // Add terms link handler
+            document.getElementById('termsLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                createTermsPage();
+            });
+        }
+
+        // Create Terms Page
+        function createTermsPage() {
+            const termsHTML = `
+                <div class="logo">
+                    <h1>AgriBots</h1>
+                    <p>Terms and Conditions</p>
+                </div>
+                
+                <div class="terms-container" style="max-height: 300px;">
+                    <div class="terms-text">
+                        <h3>AgriBots Terms of Service</h3>
+                        <p><strong>Last Updated: October 2023</strong></p>
+                        
+                        <h4>1. Acceptance of Terms</h4>
+                        <p>By accessing or using AgriBots services, you agree to be bound by these Terms of Service and our Privacy Policy.</p>
+                        
+                        <h4>2. Description of Service</h4>
+                        <p>AgriBots provides a smart farming assistant platform that offers agricultural recommendations, monitoring services, and farming insights through AI-powered technology.</p>
+                        
+                        <h4>3. User Accounts</h4>
+                        <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
+                        
+                        <h4>4. Agricultural Recommendations</h4>
+                        <p>Our platform provides AI-generated farming recommendations, but these should not replace professional agricultural advice. We are not liable for crop failures or losses based on our suggestions.</p>
+                        
+                        <h4>5. Data Collection and Use</h4>
+                        <p>We collect data about your farming activities to improve our services. By using our platform, you consent to this data collection and usage as described in our Privacy Policy.</p>
+                        
+                        <h4>6. Intellectual Property</h4>
+                        <p>All content and technology on our platform are the property of AgriBots and are protected by intellectual property laws.</p>
+                        
+                        <h4>7. Limitation of Liability</h4>
+                        <p>AgriBots shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of our services.</p>
+                        
+                        <h4>8. Changes to Terms</h4>
+                        <p>We may modify these terms at any time. Continued use of our services constitutes acceptance of the modified terms.</p>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <a href="#" id="backLink"><i class="fas fa-arrow-left"></i> Back to Login</a>
+                </div>
+            `;
+            
+            const container = document.querySelector('.container');
+            container.innerHTML = termsHTML;
+            
+            // Add back link handler
+            document.getElementById('backLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                createLoginPage();
+            });
+        }
+
+        // Initialize Chatbot
+        function initChatbot() {
+            const chatbotToggle = document.querySelector('.chatbot-toggle');
+            const chatbotContainer = document.querySelector('.chatbot-container');
+            const closeChatbot = document.getElementById('closeChatbot');
+            const chatInput = document.querySelector('.chatbot-input input');
+            const chatSendButton = document.querySelector('.chatbot-input button');
+            const chatMessages = document.querySelector('.chatbot-messages');
+            
+            chatbotToggle.addEventListener('click', function() {
+                chatbotContainer.style.display = chatbotContainer.style.display === 'flex' ? 'none' : 'flex';
+            });
+            
+            closeChatbot.addEventListener('click', function() {
+                chatbotContainer.style.display = 'none';
+            });
+            
+            function addMessage(text, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function handleUserMessage() {
+                const message = chatInput.value.trim();
+                if (message === '') return;
+                
+                addMessage(message, true);
+                chatInput.value = '';
+                
+                // Simulate bot response
+                setTimeout(() => {
+                    let response = "I'm sorry, I didn't understand that. How can I assist with your farming needs?";
+                    
+                    if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+                        response = "Hello! How can I help with your farming questions today?";
+                    } else if (message.toLowerCase().includes('soil') || message.toLowerCase().includes('moisture')) {
+                        response = "For soil moisture monitoring, ensure your sensors are properly calibrated. Ideal moisture levels depend on your crop type.";
+                    } else if (message.toLowerCase().includes('plant') || message.toLowerCase().includes('crop')) {
+                        response = "When planting new crops, consider soil type, climate conditions, and seasonal factors. Would you like specific recommendations?";
+                    } else if (message.toLowerCase().includes('problem') || message.toLowerCase().includes('issue')) {
+                        response = "For plant problems, please use our problem diagnosis tool. You can upload images and describe symptoms for accurate diagnosis.";
+                    } else if (message.toLowerCase().includes('thank')) {
+                        response = "You're welcome! Is there anything else I can help with?";
+                    }
+                    
+                    addMessage(response);
+                }, 1000);
+            }
+            
+            chatSendButton.addEventListener('click', handleUserMessage);
+            
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleUserMessage();
+                }
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up login form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // In a real app, this would verify with a server
+                const savedUser = localStorage.getItem('agribotsUser');
+                
+                if (savedUser) {
+                    const userData = JSON.parse(savedUser);
+                    
+                    if (userData.email === email && userData.password === password) {
+                        alert('Login successful! Redirecting to dashboard...');
+                        window.location.href = 'option.html';
+                    } else {
+                        alert('Invalid email or password. Please try again.');
+                    }
+                } else {
+                    alert('No user found. Please sign up first.');
+                }
+            });
+            
+            // Set up signup link
+            document.getElementById('signupLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                createSignupPage();
+            });
+            
+            // Set up terms link
+            document.getElementById('termsLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                createTermsPage();
+            });
+            
+            // Initialize chatbot
+            initChatbot();
+        });
+    </script>
+</body>
+</html>

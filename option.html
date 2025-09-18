@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriBots - Farming Options</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            font-size: 2.8rem;
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .logo p {
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        
+        .user-info {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .option-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 320px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .option-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .option-icon {
+            font-size: 3.5rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        
+        .option-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #4CAF50;
+            font-weight: 600;
+        }
+        
+        .option-description {
+            font-size: 1rem;
+            margin-bottom: 25px;
+            color: #ddd;
+            line-height: 1.5;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn:hover {
+            background: #388E3C;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn i {
+            margin-left: 8px;
+        }
+        
+        .navigation {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: #ddd;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #4CAF50;
+        }
+        
+        @media (max-width: 768px) {
+            .options-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .option-card {
+                width: 100%;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>AgriBots</h1>
+            <p>Smart Farming Assistant</p>
+        </div>
+        
+        <div id="userInfo" class="user-info">
+            <!-- User information will be inserted here by JavaScript -->
+        </div>
+        
+        <h2>How can we assist you today?</h2>
+        <p>Select one of the options below to get started</p>
+        
+        <div class="options-container">
+            <div class="option-card">
+                <div class="option-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h3 class="option-title">New Planting</h3>
+                <p class="option-description">Get guidance on sowing seeds, planting crops, and starting your agricultural journey with expert recommendations.</p>
+                <a href="planting.html" class="btn">Start Planting <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="option-card">
+                <div class="option-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <h3 class="option-title">Plant Problems</h3>
+                <p class="option-description">Having issues with your crops? Get diagnosis and solutions for plant diseases, pests, and growth problems.</p>
+                <a href="problem.html" class="btn">Get Help <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <a href="sensor.html" class="nav-link">
+                <i class="fas fa-microchip"></i> Sensor Dashboard
+            </a>
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const userData = JSON.parse(localStorage.getItem('agribotsUser'));
+            
+            if (!userData) {
+                // Redirect to login if not authenticated
+                alert('Please login first to access the AgriBots dashboard');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Display user information
+            const userInfoElement = document.getElementById('userInfo');
+            userInfoElement.innerHTML = `
+                Welcome, <strong>${userData.name || 'User'}</strong>! 
+                ${userData.email ? `(${userData.email})` : ''}
+            `;
+            
+            // Add click handlers for options
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // You can add tracking or analytics here
+                    console.log(`User selected: ${this.textContent.trim()}`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

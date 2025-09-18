@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriBots - Planting Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .logo p {
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        
+        .back-btn {
+            color: #ddd;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            color: #4CAF50;
+        }
+        
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .upload-section {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .upload-title {
+            font-size: 1.5rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .upload-area {
+            width: 100%;
+            height: 250px;
+            border: 2px dashed #4CAF50;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            text-align: center;
+            color: #ddd;
+        }
+        
+        .upload-text span {
+            color: #4CAF50;
+            text-decoration: underline;
+        }
+        
+        .image-preview {
+            width: 100%;
+            max-height: 250px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .details-section {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ddd;
+        }
+        
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #4CAF50;
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            background: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn i {
+            margin-left: 8px;
+        }
+        
+        .btn-help {
+            background: #FF9800;
+            margin-top: 10px;
+        }
+        
+        .btn-help:hover {
+            background: #F57C00;
+        }
+        
+        /* Error message styling */
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .form-container {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>AgriBots</h1>
+                <p>Planting Assistant</p>
+            </div>
+            <a href="option.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Options
+            </a>
+        </header>
+        
+        <div class="form-container">
+            <div class="upload-section">
+                <h2 class="upload-title">Upload Field Image</h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <i class="upload-icon fas fa-cloud-upload-alt"></i>
+                    <p class="upload-text">Drag & drop your image here or <span>browse</span></p>
+                    <p class="upload-text">(JPEG, PNG, WEBP - Max 5MB)</p>
+                </div>
+                
+                <div class="image-preview" id="imagePreview">
+                    <img src="" alt="Preview">
+                    <button class="remove-image" id="removeImage">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                <div class="error-message" id="imageError">Please upload an image of your field</div>
+            </div>
+            
+            <div class="details-section">
+                <h2 class="section-title">Planting Details</h2>
+                
+                <form id="plantingForm">
+                    <div class="form-group">
+                        <label for="cropType">Crop Type *</label>
+                        <select id="cropType" required>
+                            <option value="">Select crop type</option>
+                            <option value="wheat">Wheat</option>
+                            <option value="rice">Rice</option>
+                            <option value="corn">Corn</option>
+                            <option value="soybean">Soybean</option>
+                            <option value="vegetables">Vegetables</option>
+                            <option value="fruits">Fruits</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="error-message" id="cropTypeError">Please select a crop type</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="soilType">Soil Type *</label>
+                        <select id="soilType" required>
+                            <option value="">Select soil type</option>
+                            <option value="sandy">Sandy</option>
+                            <option value="loamy">Loamy</option>
+                            <option value="clay">Clay</option>
+                            <option value="silty">Silty</option>
+                            <option value="peat">Peat</option>
+                            <option value="chalky">Chalky</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                        <div class="error-message" id="soilTypeError">Please select a soil type</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="areaSize">Field Area (acres) *</label>
+                        <input type="number" id="areaSize" min="0.1" step="0.1" placeholder="Enter area in acres" required>
+                        <div class="error-message" id="areaSizeError">Please enter a valid area (minimum 0.1 acres)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plantingDate">Preferred Planting Date *</label>
+                        <input type="date" id="plantingDate" required>
+                        <div class="error-message" id="plantingDateError">Please select a valid planting date</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="climate">Climate Type *</label>
+                        <select id="climate" required>
+                            <option value="">Select climate type</option>
+                            <option value="tropical">Tropical</option>
+                            <option value="dry">Dry</option>
+                            <option value="temperate">Temperate</option>
+                            <option value="continental">Continental</option>
+                            <option value="polar">Polar</option>
+                        </select>
+                        <div class="error-message" id="climateError">Please select a climate type</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="irrigation">Irrigation Availability *</label>
+                        <select id="irrigation" required>
+                            <option value="">Select option</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="limited">Limited</option>
+                        </select>
+                        <div class="error-message" id="irrigationError">Please select an irrigation option</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Additional Notes</label>
+                        <textarea id="notes" placeholder="Any specific requirements or additional information about your field..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Get Planting Recommendations <i class="fas fa-seedling"></i></button>
+                    
+                    <!-- This button will redirect to problem.html -->
+                    <a href="problem.html" class="btn btn-help">
+                        <i class="fas fa-bug"></i> Get Help with Plant Problems
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const userData = JSON.parse(localStorage.getItem('agribotsUser'));
+            
+            if (!userData) {
+                // Redirect to login if not authenticated
+                alert('Please login first to access the planting assistant');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Set minimum date as today for planting date
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const todayStr = `${yyyy}-${mm}-${dd}`;
+            document.getElementById('plantingDate').min = todayStr;
+            
+            // Image upload functionality
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImage = imagePreview.querySelector('img');
+            const removeImageBtn = document.getElementById('removeImage');
+            const imageError = document.getElementById('imageError');
+            
+            uploadArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.background = 'rgba(76, 175, 80, 0.2)';
+                uploadArea.style.borderColor = '#388E3C';
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.background = '';
+                uploadArea.style.borderColor = '#4CAF50';
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.background = '';
+                uploadArea.style.borderColor = '#4CAF50';
+                
+                const file = e.dataTransfer.files[0];
+                handleImageFile(file);
+            });
+            
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                handleImageFile(file);
+            });
+            
+            removeImageBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                resetImageUpload();
+            });
+            
+            function handleImageFile(file) {
+                if (file && file.type.startsWith('image/')) {
+                    // Check file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size exceeds 5MB. Please choose a smaller image.');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                        uploadArea.style.display = 'none';
+                        imageError.style.display = 'none';
+                    }
+                    
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please select a valid image file (JPEG, PNG, WEBP)');
+                }
+            }
+            
+            function resetImageUpload() {
+                fileInput.value = '';
+                previewImage.src = '';
+                imagePreview.style.display = 'none';
+                uploadArea.style.display = 'flex';
+            }
+            
+            // Form validation
+            const form = document.getElementById('plantingForm');
+            const requiredFields = ['cropType', 'soilType', 'areaSize', 'plantingDate', 'climate', 'irrigation'];
+            
+            // Add validation on blur
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field);
+                if (element) {
+                    element.addEventListener('blur', function() {
+                        validateField(this.id, this.value);
+                    });
+                    
+                    element.addEventListener('input', function() {
+                        // Clear error when user starts typing
+                        const errorElement = document.getElementById(`${this.id}Error`);
+                        if (errorElement) {
+                            errorElement.style.display = 'none';
+                        }
+                    });
+                }
+            });
+            
+            // Validate individual field
+            function validateField(fieldName, value) {
+                const errorElement = document.getElementById(`${fieldName}Error`);
+                
+                if (!value) {
+                    errorElement.style.display = 'block';
+                    return false;
+                }
+                
+                // Additional validation for specific fields
+                if (fieldName === 'areaSize' && parseFloat(value) < 0.1) {
+                    errorElement.style.display = 'block';
+                    return false;
+                }
+                
+                if (fieldName === 'plantingDate') {
+                    const selectedDate = new Date(value);
+                    if (selectedDate < new Date(todayStr)) {
+                        errorElement.textContent = 'Please select a future date';
+                        errorElement.style.display = 'block';
+                        return false;
+                    }
+                }
+                
+                errorElement.style.display = 'none';
+                return true;
+            }
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                
+                // Check if image is uploaded
+                if (!fileInput.files[0]) {
+                    imageError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    imageError.style.display = 'none';
+                }
+                
+                // Validate all required fields
+                requiredFields.forEach(field => {
+                    const element = document.getElementById(field);
+                    if (!validateField(field, element.value)) {
+                        isValid = false;
+                    }
+                });
+                
+                if (!isValid) {
+                    alert('Please fill in all required fields correctly.');
+                    return;
+                }
+                
+                // Store form data in localStorage
+                const formData = {
+                    cropType: document.getElementById('cropType').value,
+                    soilType: document.getElementById('soilType').value,
+                    areaSize: document.getElementById('areaSize').value,
+                    plantingDate: document.getElementById('plantingDate').value,
+                    climate: document.getElementById('climate').value,
+                    irrigation: document.getElementById('irrigation').value,
+                    notes: document.getElementById('notes').value,
+                    image: fileInput.files[0] ? fileInput.files[0].name : null,
+                    submissionTime: new Date().toISOString()
+                };
+                
+                localStorage.setItem('plantingFormData', JSON.stringify(formData));
+                
+                // Show success message and redirect
+                alert('Thank you! Your planting details have been submitted. Redirecting to recommendations...');
+                
+                // Redirect to recommendations page
+                window.location.href = 'recommendations.html';
+            });
+        });
+    </script>
+</body>
+</html>
